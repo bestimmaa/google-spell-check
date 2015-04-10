@@ -7,10 +7,10 @@ PLUGIN_NAME = "google-spell-check"
 SETTINGS_FILE = PLUGIN_NAME + ".sublime-settings"
 SETTINGS_PREFIX = PLUGIN_NAME.lower() + '_'
 settings = sublime.load_settings(SETTINGS_FILE)
-google_local = "com"
-
-if settings is not None:
-	google_toplevel_domain = settings.get('google-lang')
+google_toplevel_domain = "com"
+language = settings.get('language')
+if language is not None:
+	google_toplevel_domain = language
 	google_toplevel_domain = google_toplevel_domain.replace("en","com")
 
 class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
