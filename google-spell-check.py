@@ -10,7 +10,8 @@ settings = sublime.load_settings(SETTINGS_FILE)
 google_local = "com"
 
 if settings is not None:
-	google_local = settings.get('google-local-version')
+	google_toplevel_domain = settings.get('google-lang')
+	google_toplevel_domain = google_toplevel_domain.replace("en","com")
 
 class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -28,7 +29,7 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 
 	def correct(self, text):
 		# grab html
-		html = self.get_page('http://www.google.'+google_local+'/search?q=' + urllib2.quote(text))
+		html = self.get_page('http://www.google.'+google_toplevel_domain+'/search?q=' + urllib2.quote(text))
 		html_parser = HTMLParser.HTMLParser()
 
 		# save html for debugging
