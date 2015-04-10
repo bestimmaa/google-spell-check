@@ -30,17 +30,16 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 
 		# save html for debugging
 		open('page.html', 'w').write(html)
-
 		# pull pieces out
-		match = re.search(r'(?:Showing results for|Did you mean|Including results for)[^\0]*?<a.*?>(.*?)</a>', html)
+		#match = re.search(r'(?:Showing results for|Did you mean|Including results for)[^\0]*?<a.*?>(.*?)</a>', html)
+		match = re.match("(.*?)<a class=\"spell\" href=\"(.*)\"><b><i>(.*)</i></b></a>(.*?)",html,re.S)
+		#match = re.match("(.*) class(.*)",html,re.S)
 		if match is None:
-			print("google-spell-check: no correction found :(")
+			print("google-spell-check: no correction found for "+text)
 			fix = text
 		else:
 			print("google-spell-check: found correction!")
-			fix = match.group(1)
-			fix = re.sub(r'<.*?>', '', fix)
-			fix = html_parser.unescape(fix)
+			fix = (match.group(3))
 
 		# return result
 		return fix
