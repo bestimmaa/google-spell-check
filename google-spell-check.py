@@ -3,6 +3,12 @@
 
 import sublime, sublime_plugin, urllib2, re, HTMLParser
 
+PLUGIN_NAME = "google-spell-check"
+SETTINGS_FILE = PLUGIN_NAME + ".sublime-settings"
+SETTINGS_PREFIX = PLUGIN_NAME.lower() + '_'
+
+settings = sublime.load_settings(SETTINGS_FILE)
+
 class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
 		if len(self.view.sel()) == 1 and self.view.sel()[0].a == self.view.sel()[0].b:
@@ -23,13 +29,15 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 		html_parser = HTMLParser.HTMLParser()
 
 		# save html for debugging
-		# open('page.html', 'w').write(html)
+		open('page.html', 'w').write(html)
 
 		# pull pieces out
 		match = re.search(r'(?:Showing results for|Did you mean|Including results for)[^\0]*?<a.*?>(.*?)</a>', html)
 		if match is None:
+			print("google-spell-check: no correction found :(")
 			fix = text
 		else:
+			print("google-spell-check: found correction!")
 			fix = match.group(1)
 			fix = re.sub(r'<.*?>', '', fix)
 			fix = html_parser.unescape(fix)
