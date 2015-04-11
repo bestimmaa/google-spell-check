@@ -23,21 +23,21 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 				continue
 
 			fix = self.correct(self.view.substr(sel))
+			fix = fix.decode('utf-8')
 			edit = self.view.begin_edit()
 			self.view.replace(edit, sel, fix)
 			self.view.end_edit(edit)
 
 	def correct(self, text):
 		# grab html
+		text = text.encode('utf-8')
 		html = self.get_page('http://www.google.'+google_toplevel_domain+'/search?q=' + urllib2.quote(text))
 		html_parser = HTMLParser.HTMLParser()
 
 		# save html for debugging
 		open('page.html', 'w').write(html)
 		# pull pieces out
-		#match = re.search(r'(?:Showing results for|Did you mean|Including results for)[^\0]*?<a.*?>(.*?)</a>', html)
 		match = re.match("(.*?)<a class=\"spell\" href=\"(.*)\"><b><i>(.*)</i></b></a>(.*?)",html,re.S)
-		#match = re.match("(.*) class(.*)",html,re.S)
 		if match is None:
 			print("google-spell-check: no correction found for "+text)
 			fix = text
