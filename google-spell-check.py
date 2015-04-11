@@ -7,11 +7,20 @@ PLUGIN_NAME = "google-spell-check"
 SETTINGS_FILE = PLUGIN_NAME + ".sublime-settings"
 SETTINGS_PREFIX = PLUGIN_NAME.lower() + '_'
 settings = sublime.load_settings(SETTINGS_FILE)
+
+def get_google_toplevel_domain(language_id):
+	if "en" in language_id:
+		return "com"
+	if "en-US" == language_id:
+		return "com"
+	if "en-UK" == language_id:
+		return "uk"
+	return language_id
+
 google_toplevel_domain = "com"
 language = settings.get('language')
 if language is not None:
-	google_toplevel_domain = language
-	google_toplevel_domain = google_toplevel_domain.replace("en","com")
+	google_toplevel_domain = get_google_toplevel_domain(language)
 
 class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -23,27 +32,27 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 				continue
 
 			fix = self.correct(self.view.substr(sel))
-			fix = fix.decode('utf-8')
+			#fix = fix.decode('utf-8')
 			edit = self.view.begin_edit()
 			self.view.replace(edit, sel, fix)
 			self.view.end_edit(edit)
 
 	def correct(self, text):
 		# grab html
-		text = text.encode('utf-8')
-		html = self.get_page('http://www.google.'+google_toplevel_domain+'/search?q=' + urllib2.quote(text))
+		html = self.get_page('http://www.google.'+google_toplevel_domain+'/search?q=' + urllib2.quote(text.encode('utf-8')))
 		html_parser = HTMLParser.HTMLParser()
 
 		# save html for debugging
-		open('page.html', 'w').write(html)
+		# open('page.html', 'w').write(html)
+		
 		# pull pieces out
 		match = re.match("(.*?)<a class=\"spell\" href=\"(.*)\"><b><i>(.*)</i></b></a>(.*?)",html,re.S)
 		if match is None:
-			print("google-spell-check: no correction found for "+text)
+			print("google-spell-check[google."+google_toplevel_domain+"] no correction found for "+text.encode('ascii','replace'))
 			fix = text
 		else:
-			print("google-spell-check: found correction!")
 			fix = (match.group(3))
+			print("google-spell-check[google."+google_toplevel_domain+"] correction for "+text+" => "+fix)
 
 		# return result
 		return fix
