@@ -1,4 +1,10 @@
-This fork fixed the spellchecking for the ST2 version (see the ST2 branch). In addition a *google-spell-check.sublime-settings* is read which supports the *language* key to allow setting the language (*en*, *de*, *it* ...) of the spell checker.
+This fork fixed the spellchecking for the ST2 version (see the ST2 branch). In addition  *google-spell-check.sublime-settings* is read which supports the *language* key to allow setting the language (*en*, *de*, *it* ...) for spell checking:
+
+    {
+        "language": "de"
+    }
+
+
 
 ---
 # Google Spell Check
