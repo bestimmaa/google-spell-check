@@ -1,3 +1,6 @@
+This fork fixed the spellchecking for the ST2 version (see the ST2 branch). In addition a google-spell-check.sublime-config is read which supports the *language* key to allow setting the language of the spell checker.
+
+---
 # Google Spell Check
 a Sublime Text Package  
 Sublime Text 2 version: https://github.com/noahcoad/google-spell-check/tree/st2  
