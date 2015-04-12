@@ -32,7 +32,7 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 				continue
 
 			fix = self.correct(self.view.substr(sel))
-			#fix = fix.decode('utf-8')
+			fix = fix.decode('utf-8')
 			edit = self.view.begin_edit()
 			self.view.replace(edit, sel, fix)
 			self.view.end_edit(edit)
@@ -52,7 +52,7 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 			fix = text
 		else:
 			fix = (match.group(3))
-			print("google-spell-check[google."+google_toplevel_domain+"] correction for "+text+" => "+fix)
+			print("google-spell-check[google."+google_toplevel_domain+"] correction for "+text.encode('ascii','replace')+" -> " + fix.decode('utf-8').encode('ascii','replace'))
 
 		# return result
 		return fix
