@@ -20,7 +20,10 @@ def get_google_toplevel_domain(language_id):
 google_toplevel_domain = "com"
 language = settings.get('language')
 if language is not None:
+	print("Loding language settings from "+SETTINGS_FILE)
 	google_toplevel_domain = get_google_toplevel_domain(language)
+else:
+	print("Using default language setting english (google.com)")
 
 class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -32,7 +35,7 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 				continue
 
 			fix = self.correct(self.view.substr(sel))
-			fix = fix.decode('utf-8')
+			fix = fix.decode("utf-8")
 			edit = self.view.begin_edit()
 			self.view.replace(edit, sel, fix)
 			self.view.end_edit(edit)
@@ -48,8 +51,8 @@ class GoogleSpellCheckCommand(sublime_plugin.TextCommand):
 		# pull pieces out
 		match = re.match("(.*?)<a class=\"spell\" href=\"(.*)\"><b><i>(.*)</i></b></a>(.*?)",html,re.S)
 		if match is None:
+			fix = text.encode("utf-8")
 			print("google-spell-check[google."+google_toplevel_domain+"] no correction found for "+text.encode('ascii','replace'))
-			fix = text
 		else:
 			fix = (match.group(3))
 			print("google-spell-check[google."+google_toplevel_domain+"] correction for "+text.encode('ascii','replace')+" -> " + fix.decode('utf-8').encode('ascii','replace'))
